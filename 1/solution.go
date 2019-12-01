@@ -17,7 +17,7 @@ func main() {
 		return
 	}
 
-  reader := bufio.NewReader(file)
+	reader := bufio.NewReader(file)
 
 	line := ""
 	totalFuel := 0
@@ -60,7 +60,7 @@ func calcCumulativeFuel(mass int) int {
 }
 
 func calcFuel(mass int) int {
-	fuel := int(float64(mass) / 3) - 2
+	fuel := int(float64(mass)/3) - 2
 
 	if fuel > 0 {
 		return fuel
