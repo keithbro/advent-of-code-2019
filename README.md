@@ -6,7 +6,9 @@ https://adventofcode.com/
 
 ## Day 1: The Tyranny of the Rocket Equation (Go)
 
-    $ cd 1
-    $ docker build -t aoc1:latest .
-    $ docker run --rm -it aoc1:latest
+    $ docker build 1
 
+
+## Day 2: 1202 Program Alarm (Perl 5)
+
+    $ docker build 2
