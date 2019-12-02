@@ -10,17 +10,39 @@ open(my $fh, '<:encoding(UTF-8)', $filename) or die $!;
 
 my $row = <$fh>;
 
-my @integers = split /,/, $row;
-$integers[1] = 12;
-$integers[2] = 2;
+for (my $noun = 0; $noun < 99; $noun++) {
+    for (my $verb = 0; $verb < 99; $verb++) {
+        my @integers = split /,/, $row;
+        my $output = eval { calc($noun, $verb, \@integers) } || "";
 
-print "Input is: ". join ',', @integers;
+        if ($output eq "19690720") {
+            say "noun: $noun, verb: $verb";
+            say "Answer is " . (100 * $noun + $verb);
+            exit 0;
+        }
+    }
+}
 
-my $opcode_idx = 0;
-my $opcode = "";
-while($opcode_idx < scalar @integers && $opcode ne "99") {
-    ($opcode_idx, $opcode) = evolve($opcode_idx, \@integers);
-    say "Output is: " . join ',', @integers;
+sub calc {
+    my ($noun, $verb, $integers) = @_;
+
+    $integers->[1] = $noun;
+    $integers->[2] = $verb;
+
+    print "Input is: ". join ',', @$integers;
+
+    my $opcode_idx = 0;
+    my $opcode = "";
+    while($opcode_idx < scalar @$integers && $opcode ne "99") {
+        ($opcode_idx, $opcode) = evolve($opcode_idx, $integers);
+        say "Evolution is: " . join ',', @$integers;
+    }
+
+    my $output = $integers->[0];
+
+    say "Output is $output";
+
+    return $output;
 }
 
 sub evolve {
