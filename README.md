@@ -4,7 +4,9 @@ Advent of Code is an Advent calendar of small programming puzzles for a variety 
 
 https://adventofcode.com/
 
-## --- Day 1: The Tyranny of the Rocket Equation ---
+## Day 1: The Tyranny of the Rocket Equation (Go)
 
-    $ go run 1/solution.go
+    $ cd 1
+    $ docker build -t aoc1:latest .
+    $ docker run --rm -it aoc1:latest
 
