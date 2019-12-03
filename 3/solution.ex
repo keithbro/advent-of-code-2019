@@ -8,7 +8,7 @@ defmodule Point do
   end
 
   def distance_from_origin(point) do
-    abs(List.first(point)) + abs(List.last(point))
+    point |> Enum.map(&Kernel.abs/1) |> Enum.sum
   end
 end
 
