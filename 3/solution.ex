@@ -10,6 +10,15 @@ defmodule Point do
   def distance_from_origin(p) do
     abs(List.first(p)) + abs(List.last(p))
   end
+
+  def for_direction(direction) do
+    cond do
+       direction === "U" -> [0,1]
+       direction === "D" -> [0,-1]
+       direction === "L" -> [-1,0]
+       direction === "R" -> [1,0]
+     end
+  end
 end
 
 defmodule Vector do
@@ -21,15 +30,16 @@ defmodule Vector do
   end
 
   def points(vector, origin) do
-    direction_point = cond do
-      vector.direction === "U" -> [0,1]
-      vector.direction === "D" -> [0,-1]
-      vector.direction === "L" -> [-1,0]
-      vector.direction === "R" -> [1,0]
-    end
+    vector.direction |> List.duplicate(vector.distance)
+                     |> Enum.reduce([origin], fn direction, acc -> PointList.apply(acc, direction) end)
+  end
+end
 
-    direction_point |> List.duplicate(vector.distance)
-                    |> Enum.reduce([origin], fn p, acc -> acc ++ [Point.add(p, List.last(acc))] end)
+defmodule PointList do
+  def apply(points, direction) do
+    point = Point.for_direction(direction)
+
+    points ++ [Point.add(point, List.last(points))]
   end
 end
 
