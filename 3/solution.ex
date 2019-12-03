@@ -10,22 +10,22 @@ defmodule Point do
   def distance_from_origin(p) do
     abs(List.first(p)) + abs(List.last(p))
   end
+end
 
-  def for_direction(direction) do
+defmodule Direction do
+  def extend_points(direction, points) do
+    point = Direction.to_point(direction)
+
+    points ++ [Point.add(point, List.last(points))]
+  end
+
+  def to_point(direction) do
     cond do
        direction === "U" -> [0,1]
        direction === "D" -> [0,-1]
        direction === "L" -> [-1,0]
        direction === "R" -> [1,0]
      end
-  end
-end
-
-defmodule Direction do
-  def extend_points(direction, points) do
-    point = Point.for_direction(direction)
-
-    points ++ [Point.add(point, List.last(points))]
   end
 end
 
