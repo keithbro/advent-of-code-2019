@@ -1,12 +1,14 @@
 defmodule Point do
-  defstruct [:x, :y]
-
   def add(p1, p2) do
-    %Point{x: p1.x + p2.x, y: p1.y + p2.y}
+    [List.first(p1) + List.first(p2), List.last(p1) + List.last(p2)]
   end
 
   def origin() do
-    %Point{x: 0, y: 0}
+    [0,0]
+  end
+
+  def distance_from_origin(p) do
+    abs(List.first(p)) + abs(List.last(p))
   end
 end
 
@@ -20,10 +22,10 @@ defmodule Vector do
 
   def points(vector, origin) do
     direction_point = cond do
-      vector.direction === "U" -> %Point{x:  0, y:  1}
-      vector.direction === "D" -> %Point{x:  0, y: -1}
-      vector.direction === "L" -> %Point{x: -1, y:  0}
-      vector.direction === "R" -> %Point{x:  1, y:  0}
+      vector.direction === "U" -> [0,1]
+      vector.direction === "D" -> [0,-1]
+      vector.direction === "L" -> [-1,0]
+      vector.direction === "R" -> [1,0]
     end
 
     direction_point |> List.duplicate(vector.distance)
@@ -45,21 +47,21 @@ defmodule Wire do
 
   def points(wire) do
     wire.vectors |> Enum.reduce([wire.origin], fn v, acc -> acc ++ List.delete_at(Vector.points(v, List.last(acc)), 0) end)
+                 |> MapSet.new
+  end
+
+  def intersection(w1, w2) do
+    MapSet.intersection(Wire.points(w1), Wire.points(w2)) |> MapSet.delete(Point.origin)
   end
 end
-
 
 {:ok, data} = File.read "input.txt"
 
 wires = data |> String.replace_trailing("\n", "")
              |> String.split("\n")
              |> Enum.map(&Wire.from_str/1)
-wire = List.first(wires)
-Wire.points(wire) |> Enum.each(fn x -> IO.inspect x end)
-#IO.inspect Vector.points(Vector.from_str("U12"), Point.origin)
 
-#points = Enum.reduce(List.first(paths), fn x, acc -> x <> acc end)
-
-#IO.inspect points
-
+Wire.intersection(List.first(wires), List.last(wires)) |> Enum.min_by(&Point.distance_from_origin/1)
+                                                       |> Point.distance_from_origin
+                                                       |> IO.inspect
 
