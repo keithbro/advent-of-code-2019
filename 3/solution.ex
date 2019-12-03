@@ -7,8 +7,8 @@ defmodule Point do
     [0,0]
   end
 
-  def distance_from_origin(p) do
-    abs(List.first(p)) + abs(List.last(p))
+  def distance_from_origin(point) do
+    abs(List.first(point)) + abs(List.last(point))
   end
 end
 
@@ -41,6 +41,10 @@ defmodule Vector do
     vector.direction |> List.duplicate(vector.distance)
                      |> Enum.reduce([origin], &Direction.extend_points/2)
   end
+
+  def extend_points(vector, points) do
+    points ++ List.delete_at(Vector.points(vector, List.last(points)), 0)
+  end
 end
 
 defmodule Wire do
@@ -56,7 +60,7 @@ defmodule Wire do
   end
 
   def points(wire) do
-    wire.vectors |> Enum.reduce([wire.origin], fn v, acc -> acc ++ List.delete_at(Vector.points(v, List.last(acc)), 0) end)
+    wire.vectors |> Enum.reduce([wire.origin], &Vector.extend_points/2)
                  |> MapSet.new
   end
 
