@@ -78,4 +78,3 @@ wires = data |> String.replace_trailing("\n", "")
 Wire.intersection(List.first(wires), List.last(wires)) |> Enum.min_by(&Point.distance_from_origin/1)
                                                        |> Point.distance_from_origin
                                                        |> IO.inspect
-
