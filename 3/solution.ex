@@ -21,6 +21,14 @@ defmodule Point do
   end
 end
 
+defmodule Direction do
+  def extend_points(direction, points) do
+    point = Point.for_direction(direction)
+
+    points ++ [Point.add(point, List.last(points))]
+  end
+end
+
 defmodule Vector do
   defstruct [:direction, :distance]
 
@@ -31,15 +39,7 @@ defmodule Vector do
 
   def points(vector, origin) do
     vector.direction |> List.duplicate(vector.distance)
-                     |> Enum.reduce([origin], fn direction, acc -> PointList.apply(acc, direction) end)
-  end
-end
-
-defmodule PointList do
-  def apply(points, direction) do
-    point = Point.for_direction(direction)
-
-    points ++ [Point.add(point, List.last(points))]
+                     |> Enum.reduce([origin], &Direction.extend_points/2)
   end
 end
 
