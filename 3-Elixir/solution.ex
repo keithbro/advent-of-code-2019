@@ -67,25 +67,23 @@ defmodule Wire do
     MapSet.intersection(MapSet.new(Wire.points(w1)), MapSet.new(Wire.points(w2))) |> MapSet.delete(Point.origin)
   end
 
-  def distances(wire_points, points) do
-    wire_points |> Enum.with_index
-                |> Enum.reduce(%{}, fn {wire_point, idx}, acc ->
-                     if Enum.member?(points, wire_point) do
-                       Map.put(acc, wire_point, idx)
-                     else
-                       acc
-                     end
-                   end)
+  def distance_map(wire, points) do
+    wire |> Wire.points
+         |> Enum.with_index
+         |> Enum.reduce(%{}, fn {wire_point, idx}, acc ->
+              if Enum.member?(points, wire_point) do
+                Map.put(acc, wire_point, idx)
+              else
+                acc
+              end
+            end)
   end
+end
 
-  def intersection_with_distances(w1, w2, intersection) do
-    points1 = Wire.points(w1)
-    points2 = Wire.points(w2)
-
-    d1 = Wire.distances(points1, intersection)
-    d2 = Wire.distances(points2, intersection)
-
-    intersection |> Enum.reduce(%{}, fn point, acc -> Map.put(acc, point, d1[point] + d2[point]) end)
+defmodule PointCollection do
+  def distance_map(points, wires) do
+    wires |> Enum.map(fn wire -> Wire.distance_map(wire, points) end)
+          |> Enum.reduce(%{}, fn distance_map, acc -> Map.merge(acc, distance_map, fn _, d1, d2 -> d1 + d2 end) end)
   end
 end
 
@@ -101,4 +99,6 @@ intersection |> Enum.min_by(&Point.distance_from_origin/1)
              |> Point.distance_from_origin
              |> IO.inspect
 
-IO.inspect Wire.intersection_with_distances(List.first(wires), List.last(wires), intersection)
+intersection |> PointCollection.distance_map(wires)
+             |> Enum.min_by(fn {_, d} -> d end)
+             |> IO.inspect
