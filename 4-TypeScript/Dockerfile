@@ -4,4 +4,4 @@ WORKDIR /app
 
 RUN npm install -g typescript
 
-CMD tsc --outDir /tmp solution.ts && node /tmp/solution.js
+CMD tsc --strict --outDir /tmp solution.ts && node /tmp/solution.js
