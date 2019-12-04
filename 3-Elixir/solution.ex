@@ -83,7 +83,17 @@ end
 defmodule PointCollection do
   def distance_map(points, wires) do
     wires |> Enum.map(fn wire -> Wire.distance_map(wire, points) end)
-          |> Enum.reduce(%{}, fn distance_map, acc -> Map.merge(acc, distance_map, fn _, d1, d2 -> d1 + d2 end) end)
+          |> DistanceMap.merge
+  end
+end
+
+defmodule DistanceMap do
+  def minimum(distance_map) do
+    Enum.min_by(distance_map, fn {_, d} -> d end)
+  end
+
+  def merge(distance_maps) do
+    Enum.reduce(distance_maps, %{}, fn distance_map, acc -> Map.merge(acc, distance_map, fn _, d1, d2 -> d1 + d2 end) end)
   end
 end
 
@@ -100,5 +110,5 @@ intersection |> Enum.min_by(&Point.distance_from_origin/1)
              |> IO.inspect
 
 intersection |> PointCollection.distance_map(wires)
-             |> Enum.min_by(fn {_, d} -> d end)
+             |> DistanceMap.minimum
              |> IO.inspect
