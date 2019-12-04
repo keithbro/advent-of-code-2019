@@ -18,15 +18,22 @@ const digitsIncreaseOrStayTheSame = (i: number) : boolean => {
   return true;
 };
 
+const countMatching = (min: number, max: number) : number => {
+  return 0;
+};
+
 console.log("Tests");
 console.log(" - areTwoAdjacentNumbersTheSame");
-if (areTwoAdjacentNumbersTheSame(123456) === true) { throw new Error(); }
-if (areTwoAdjacentNumbersTheSame(122456) === false) { throw new Error(); }
+if (areTwoAdjacentNumbersTheSame(123456) === true) { throw new Error() }
+if (areTwoAdjacentNumbersTheSame(122456) === false) { throw new Error() }
 
 console.log(" - digitsIncreaseOrStayTheSame");
-if (digitsIncreaseOrStayTheSame(123456) === false) { throw new Error('123456'); }
-if (digitsIncreaseOrStayTheSame(123455) === false) { throw new Error('123455'); }
-if (digitsIncreaseOrStayTheSame(123454) === true) { throw new Error('123454'); }
+if (digitsIncreaseOrStayTheSame(123456) === false) { throw new Error('123456') }
+if (digitsIncreaseOrStayTheSame(123455) === false) { throw new Error('123455') }
+if (digitsIncreaseOrStayTheSame(123454) === true) { throw new Error('123454') }
+
+console.log(" - countMatching ");
+if (countMatching(100000, 100010) !== 0) { throw new Error('100000-100010') }
 
 console.log("All tests have passed.");
 
