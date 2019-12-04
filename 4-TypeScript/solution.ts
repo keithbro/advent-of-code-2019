@@ -34,6 +34,7 @@ if (digitsIncreaseOrStayTheSame(123454) === true) { throw new Error('123454') }
 
 console.log(" - countMatching ");
 if (countMatching(100000, 100010) !== 0) { throw new Error('100000-100010') }
+if (countMatching(111111, 111121) !== 10) { throw new Error('111111-111121') }
 
 console.log("All tests have passed.");
 
