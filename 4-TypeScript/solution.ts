@@ -1,5 +1,4 @@
-const minimum = 130254;
-const maximum = 678275;
+import * as assert from 'assert';
 
 const areTwoAdjacentNumbersTheSame = (i: number) : boolean => {
   const str = i.toString();
@@ -19,25 +18,30 @@ const digitsIncreaseOrStayTheSame = (i: number) : boolean => {
 };
 
 const countMatching = (min: number, max: number) : number => {
-  return 0;
+  let count = 0;
+
+  for (let i = min; i <= max; i++) {
+    if (areTwoAdjacentNumbersTheSame(i) && digitsIncreaseOrStayTheSame(i)) {
+      count++;
+    }
+  }
+
+  return count;
 };
 
 console.log("Tests");
-console.log(" - areTwoAdjacentNumbersTheSame");
-if (areTwoAdjacentNumbersTheSame(123456) === true) { throw new Error() }
-if (areTwoAdjacentNumbersTheSame(122456) === false) { throw new Error() }
+assert.strictEqual(areTwoAdjacentNumbersTheSame(123456), false);
+assert.strictEqual(areTwoAdjacentNumbersTheSame(122456), true);
 
-console.log(" - digitsIncreaseOrStayTheSame");
-if (digitsIncreaseOrStayTheSame(123456) === false) { throw new Error('123456') }
-if (digitsIncreaseOrStayTheSame(123455) === false) { throw new Error('123455') }
-if (digitsIncreaseOrStayTheSame(123454) === true) { throw new Error('123454') }
+assert.strictEqual(digitsIncreaseOrStayTheSame(123456), true);
+assert.strictEqual(digitsIncreaseOrStayTheSame(123455), true);
+assert.strictEqual(digitsIncreaseOrStayTheSame(123454), false);
 
-console.log(" - countMatching ");
-if (countMatching(100000, 100010) !== 0) { throw new Error('100000-100010') }
-if (countMatching(111111, 111121) !== 10) { throw new Error('111111-111121') }
+assert.strictEqual(countMatching(100000, 100010), 0);
+assert.strictEqual(countMatching(111111, 111121), 9);
 
 console.log("All tests have passed.");
 
-const greeter = (person: string) => "Hello, " + person;
+console.log(countMatching(130254, 678275));
 
-console.log(greeter("Keith"));
+
