@@ -100,8 +100,6 @@ fun equals(instructionPointer: Int, modes: List<Int>, integers: List<Int>): Resu
   return Result(instructionPointer + 4, update(integers, v[2], newValue))
 }
 
-data class IndexValue(val idx: Int, val value: Int)
-
 fun update(integers: List<Int>, targetIdx: Int, newValue: Int): List<Int> {
   return integers.mapIndexed { index, integer ->
     if (index == targetIdx) newValue
