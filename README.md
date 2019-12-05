@@ -13,7 +13,7 @@ For example for day 1:
     $ docker build -t aoc:latest 1-Go
     $ docker run -v "$(pwd)/1-Go:/app" -it --rm aoc:latest
 
-## Days, Puzzles and Languages
+## Days and Languages
 
 | Day | Language   |
 | ---:| ---------- |
