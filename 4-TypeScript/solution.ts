@@ -77,7 +77,6 @@ assert.strictEqual(digitsIncreaseOrStayTheSame(111122), true);
 assert.deepEqual(countMatching(100000, 100010), { one: 0, two: 0 });
 assert.deepEqual(countMatching(111111, 111121), { one: 9, two: 0 });
 assert.deepEqual(countMatching(123456, 234567), { one: 1022, two: 727 });
-assert.deepEqual(countMatching(130254, 678275), { one: 2090, two: 1419 });
 
 console.log("All tests have passed.");
 
