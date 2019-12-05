@@ -1,26 +1,24 @@
 import * as assert from 'assert';
 
-const countOccurrences = (acc: Map<string, number>, cur: string, idx: number, src: Array<string>): Map<string, number> => {
+const adjacentOccurrenceReducer = (acc: Map<string, number>, cur: string, idx: number, src: Array<string>): Map<string, number> => {
   const prev : string | null = src[idx - 1];
   if (prev === cur) { acc.set(cur, (acc.get(cur) || 1) + 1) }
 
   return acc;
 }
 
-const areGroupsPresent = (i: number) : boolean => {
+const adjacentOccurenceCounts = (i: number) : Array<number> => {
   const digits = i.toString().split('');
-  const digitCounts = digits.reduce(countOccurrences, new Map());
-  const values = Array.from(digitCounts.values());
+  const digitCounts = digits.reduce(adjacentOccurrenceReducer, new Map());
+  return Array.from(digitCounts.values());
+};
 
-  return values.some(x => x > 1);
+const areGroupsPresent = (i: number) : boolean => {
+  return adjacentOccurenceCounts(i).some(x => x > 1);
 };
 
 const arePairsPresent = (i: number) : boolean => {
-  const digits = i.toString().split('');
-  const digitCounts = digits.reduce(countOccurrences, new Map());
-  const values = Array.from(digitCounts.values());
-
-  return values.some(x => x === 2);
+  return adjacentOccurenceCounts(i).some(x => x === 2);
 };
 
 const digitsIncreaseOrStayTheSame = (i: number) : boolean => {
