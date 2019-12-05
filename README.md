@@ -15,11 +15,11 @@ For example for day 1:
 
 ## Days, Puzzles and Languages
 
-| Day | Puzzle                             | Language   |
-| ---:| ---------------------------------- | ---------- |
-|   1 | The Tyranny of the Rocket Equation | Go         |
-|   2 | 1202 Program Alarm                 | Perl 5     |
-|   3 | Crossed Wires                      | Elixir     |
-|   4 |                                    | TypeScript |
-|   5 |                                    | Kotlin     |
-|   6 |                                    | Rust       |
+| Day | Language   |
+| ---:| ---------- |
+|   1 | Go         |
+|   2 | Perl 5     |
+|   3 | Elixir     |
+|   4 | TypeScript |
+|   5 | Kotlin     |
+|   6 | Rust       |
