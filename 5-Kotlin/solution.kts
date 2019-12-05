@@ -2,43 +2,45 @@
 val program = "1002,4,3,4,33"
 
 var integers = program.split(",").map { it.toInt() }
-var opcode_idx = 0
+var opcodeIdx = 0
 var exit = false
 val input = 1
 
 println(integers)
 
-while (opcode_idx < integers.size && !exit) {
-  val result = evolve(opcode_idx, input, integers)
-  opcode_idx = result.opcode_idx
+while (opcodeIdx < integers.size && !exit) {
+  val result = evolve(opcodeIdx, input, integers)
+  opcodeIdx = result.opcodeIdx
   exit = result.exit
   integers = result.integers
 }
 
 println(integers)
 
-data class Result(val opcode_idx: Int, val integers: List<Int>, val exit: Boolean = false)
+data class Result(val opcodeIdx: Int, val integers: List<Int>, val exit: Boolean = false)
 
-fun evolve(opcode_idx: Int, input: Int, integers: List<Int>): Result {
-  val opcode = integers[opcode_idx]
+fun evolve(opcodeIdx: Int, input: Int, integers: List<Int>): Result {
+  val opcodeAndModes = integers[opcodeIdx].toString()
+  val opcode = opcodeAndModes.takeLast(2).toInt()
+  val modes = opcodeAndModes.dropLast(2).reversed().toList().map { it.toString().toInt() }
 
   return when (opcode) {
-    1    -> add(opcode_idx, integers)
-    2    -> multiply(opcode_idx, integers)
-    3    -> storeInput(opcode_idx, input, integers)
-    4    -> outputValue(opcode_idx, integers)
-    99   -> Result(opcode_idx, integers, true)
+    1    -> add(opcodeIdx, modes, integers)
+    2    -> multiply(opcodeIdx, modes, integers)
+    3    -> storeInput(opcodeIdx, input, integers)
+    4    -> outputValue(opcodeIdx, integers)
+    99   -> Result(opcodeIdx, integers, true)
     else -> throw IllegalArgumentException("Invalid opcode " + opcode)
   }
 }
 
-fun add(opcodeIdx: Int, integers: List<Int>): Result {
-  val (targetIdx, newValue) = binaryFunction(opcodeIdx, integers, { a, b -> a + b })
+fun add(opcodeIdx: Int, modes: List<Int>, integers: List<Int>): Result {
+  val (targetIdx, newValue) = binaryFunction(opcodeIdx, modes, integers, { a, b -> a + b })
   return Result(opcodeIdx + 4, update(integers, targetIdx, newValue))
 }
 
-fun multiply(opcodeIdx: Int, integers: List<Int>): Result {
-  val (targetIdx, newValue) = binaryFunction(opcodeIdx, integers, { a, b -> a * b })
+fun multiply(opcodeIdx: Int, modes: List<Int>, integers: List<Int>): Result {
+  val (targetIdx, newValue) = binaryFunction(opcodeIdx, modes, integers, { a, b -> a * b })
   return Result(opcodeIdx + 4, update(integers, targetIdx, newValue))
 }
 
@@ -55,12 +57,14 @@ fun outputValue(opcodeIdx: Int, integers: List<Int>): Result {
 
 data class IndexValue(val idx: Int, val value: Int)
 
-fun binaryFunction(opcodeIdx: Int, integers: List<Int>, action: (Int, Int) -> Int): IndexValue {
+fun binaryFunction(opcodeIdx: Int, modes: List<Int>, integers: List<Int>, action: (Int, Int) -> Int): IndexValue {
   val xIdx = integers[opcodeIdx + 1]
   val yIdx = integers[opcodeIdx + 2]
   val targetIdx = integers[opcodeIdx + 3]
-  val x = integers[xIdx]
-  val y = integers[yIdx]
+  val x = if (modes[0] == 1) xIdx
+          else integers[xIdx]
+  val y = if (modes[1] == 1) yIdx
+          else integers[yIdx]
 
   return IndexValue(targetIdx, action(x, y))
 }
