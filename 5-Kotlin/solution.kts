@@ -18,11 +18,9 @@ println(integers)
 data class Result(val instructionPointer: Int, val integers: List<Int>, val exit: Boolean = false)
 
 fun evolve(instructionPointer: Int, input: Int, integers: List<Int>): Result {
-  val opcodeAndModes = integers[instructionPointer].toString().padStart(5, '0')
+  val opcodeAndModes = integers[instructionPointer].toString().padStart(4, '0')
   val opcode = opcodeAndModes.takeLast(2).toInt()
   val modes = opcodeAndModes.dropLast(2).reversed().toList().map { it.toString().toInt() }
-  println("opcode " + opcode)
-  println(integers)
 
   return when (opcode) {
     1    -> add(instructionPointer, modes, integers)
@@ -38,27 +36,23 @@ fun evolve(instructionPointer: Int, input: Int, integers: List<Int>): Result {
   }
 }
 
-fun resolveValues(instructionPointer: Int, modes: List<Int>, integers: List<Int>): List<Int> {
-  val xIdx = integers[instructionPointer + 1]
-  val yIdx = integers[instructionPointer + 2]
-  val targetIdx = integers.getOrElse(instructionPointer + 3, { 0 })
+fun resolveValues(instructionPointer: Int, modes: List<Int>, n: Int, integers: List<Int>): List<Int> {
+  val slice = integers.slice(instructionPointer + 1..instructionPointer + n)
 
-  val x = if (modes[0] == 1) xIdx
-          else integers.getOrElse(xIdx, { 0 })
-  val y = if (modes[1] == 1) yIdx
-          else integers.getOrElse(yIdx, { 0 })
-
-  return listOf(x, y, targetIdx)
+  return slice.mapIndexed { index, value ->
+    if (modes.getOrElse(index, { 1 }) == 1) value
+    else integers.get(value)
+  }
 }
 
 fun add(instructionPointer: Int, modes: List<Int>, integers: List<Int>): Result {
-  val (x, y, targetIdx) = resolveValues(instructionPointer, modes, integers)
-  return Result(instructionPointer + 4, update(integers, targetIdx, x + y))
+  val v = resolveValues(instructionPointer, modes, 3, integers)
+  return Result(instructionPointer + 4, update(integers, v[2], v[0] + v[1]))
 }
 
 fun multiply(instructionPointer: Int, modes: List<Int>, integers: List<Int>): Result {
-  val (x, y, targetIdx) = resolveValues(instructionPointer, modes, integers)
-  return Result(instructionPointer + 4, update(integers, targetIdx, x * y))
+  val v = resolveValues(instructionPointer, modes, 3, integers)
+  return Result(instructionPointer + 4, update(integers, v[2], v[0] * v[1]))
 }
 
 fun storeInput(instructionPointer: Int, newValue: Int, integers: List<Int>): Result {
@@ -67,43 +61,43 @@ fun storeInput(instructionPointer: Int, newValue: Int, integers: List<Int>): Res
 }
 
 fun outputValue(instructionPointer: Int, modes: List<Int>, integers: List<Int>): Result {
-  val (x) = resolveValues(instructionPointer, modes, integers)
-  println("OUTPUT: " + x)
+  val (v) = resolveValues(instructionPointer, modes, 1, integers)
+  println("OUTPUT: " + v)
   return Result(instructionPointer + 2, integers)
 }
 
 fun jumpIfTrue(instructionPointer: Int, modes: List<Int>, integers: List<Int>): Result {
-  val (x, y) = resolveValues(instructionPointer, modes, integers)
-  val newOpcodeIdx = if (x != 0) y
+  val v = resolveValues(instructionPointer, modes, 2, integers)
+  val newOpcodeIdx = if (v[0] != 0) v[1]
                      else instructionPointer + 3
 
   return Result(newOpcodeIdx, integers)
 }
 
 fun jumpIfFalse(instructionPointer: Int, modes: List<Int>, integers: List<Int>): Result {
-  val (x, y) = resolveValues(instructionPointer, modes, integers)
-  val newOpcodeIdx = if (x == 0) y
+  val v = resolveValues(instructionPointer, modes, 2, integers)
+  val newOpcodeIdx = if (v[0] == 0) v[1]
                      else instructionPointer + 3
 
   return Result(newOpcodeIdx, integers)
 }
 
 fun lessThan(instructionPointer: Int, modes: List<Int>, integers: List<Int>): Result {
-  val (x, y, targetIdx) = resolveValues(instructionPointer, modes, integers)
+  val v = resolveValues(instructionPointer, modes, 3, integers)
 
-  val newValue = if (x < y) 1
+  val newValue = if (v[0] < v[1]) 1
                  else 0
 
-  return Result(instructionPointer + 4, update(integers, targetIdx, newValue))
+  return Result(instructionPointer + 4, update(integers, v[2], newValue))
 }
 
 fun equals(instructionPointer: Int, modes: List<Int>, integers: List<Int>): Result {
-  val (x, y, targetIdx) = resolveValues(instructionPointer, modes, integers)
+  val v = resolveValues(instructionPointer, modes, 3, integers)
 
-  val newValue = if (x == y) 1
+  val newValue = if (v[0] == v[1]) 1
                  else 0
 
-  return Result(instructionPointer + 4, update(integers, targetIdx, newValue))
+  return Result(instructionPointer + 4, update(integers, v[2], newValue))
 }
 
 data class IndexValue(val idx: Int, val value: Int)
