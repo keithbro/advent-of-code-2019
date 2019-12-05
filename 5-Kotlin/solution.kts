@@ -1,5 +1,5 @@
 
-val program = "3,0,4,0,99"
+val program = "1002,4,3,4,33"
 
 var integers = program.split(",").map { it.toInt() }
 var opcode_idx = 0
