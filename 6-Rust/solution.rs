@@ -13,7 +13,7 @@ fn main() {
 
     let orbit_map = parse(&filename);
     let orbit_counts = get_orbit_counts(orbit_map);
-    println!("With text:\n{:?}", orbit_counts);
+    println!("{:?}", orbit_counts);
 }
 
 fn get_orbit_count(orbit_map: &HashMap<String, String>, body: &str) -> u32 {
@@ -29,7 +29,7 @@ fn get_orbit_count(orbit_map: &HashMap<String, String>, body: &str) -> u32 {
 }
 
 fn get_orbit_counts(orbit_map: HashMap<String, String>) -> u32 {
-    orbit_map.values().fold(0, |mut count, satellite| {
+    orbit_map.keys().fold(0, |mut count, satellite| {
         count += get_orbit_count(&orbit_map, &satellite);
         count
     })
