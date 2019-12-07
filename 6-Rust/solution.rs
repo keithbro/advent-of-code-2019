@@ -16,21 +16,22 @@ fn main() {
     println!("{:?}", orbit_counts);
 }
 
-fn get_orbit_count(orbit_map: &HashMap<String, String>, body: &str) -> u32 {
-    let mut x = body;
-    let mut count = 0;
+fn get_orbits(orbit_map: &HashMap<String, String>, body: &str) -> Vec<String> {
+    let mut cur = body;
+    let mut orbits = vec![];
 
-    while orbit_map.contains_key(x) {
-        count += 1;
-        x = orbit_map.get(x).unwrap();
+    while orbit_map.contains_key(cur) {
+        cur = orbit_map.get(cur).unwrap();
+        orbits.push(cur.to_string());
     }
 
-    count
+    orbits
 }
 
-fn get_orbit_counts(orbit_map: HashMap<String, String>) -> u32 {
+fn get_orbit_counts(orbit_map: HashMap<String, String>) -> usize {
     orbit_map.keys().fold(0, |mut count, satellite| {
-        count += get_orbit_count(&orbit_map, &satellite);
+        let orbits = get_orbits(&orbit_map, &satellite);
+        count += orbits.len();
         count
     })
 }
