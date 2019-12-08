@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::io::{BufRead, BufReader};
 use std::fs::File;
 
@@ -12,23 +12,30 @@ fn main() {
     let filename = "input.txt";
 
     let orbit_map = parse(&filename);
-    let orbit_counts = get_orbit_counts(orbit_map);
+    let orbit_counts = get_orbit_counts(&orbit_map);
     println!("{:?}", orbit_counts);
+
+    let my_orbits = get_orbits(&orbit_map, &"YOU");
+    println!("{:?}", my_orbits);
+    let santas_orbits = get_orbits(&orbit_map, &"SAN");
+    println!("{:?}", santas_orbits);
+    let min_orbital_transfers = my_orbits.symmetric_difference(&santas_orbits).count();
+    println!("{:?}", min_orbital_transfers);
 }
 
-fn get_orbits(orbit_map: &HashMap<String, String>, body: &str) -> Vec<String> {
+fn get_orbits(orbit_map: &HashMap<String, String>, body: &str) -> HashSet<String> {
     let mut cur = body;
-    let mut orbits = vec![];
+    let mut orbits = HashSet::new();
 
     while orbit_map.contains_key(cur) {
         cur = orbit_map.get(cur).unwrap();
-        orbits.push(cur.to_string());
+        orbits.insert(cur.to_string());
     }
 
     orbits
 }
 
-fn get_orbit_counts(orbit_map: HashMap<String, String>) -> usize {
+fn get_orbit_counts(orbit_map: &HashMap<String, String>) -> usize {
     orbit_map.keys().fold(0, |mut count, satellite| {
         let orbits = get_orbits(&orbit_map, &satellite);
         count += orbits.len();
