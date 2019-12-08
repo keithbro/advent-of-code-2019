@@ -23,3 +23,7 @@ For example for day 1:
 |   4 | TypeScript |
 |   5 | Kotlin     |
 |   6 | Rust       |
+|   7 |            |
+|   8 |            |
+|   9 |            |
+|  10 |            |
